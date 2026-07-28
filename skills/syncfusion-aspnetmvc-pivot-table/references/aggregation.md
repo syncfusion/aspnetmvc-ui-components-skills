@@ -27,6 +27,7 @@ Use `SummaryTypes` enum from `Syncfusion.EJ2.PivotView` namespace:
 | **PopulationVar** | Population variance | Statistical variance |
 | **SampleVar** | Sample variance | Sample variance |
 | **RunningTotals** | Cumulative sum | Progress tracking |
+| **PercentageOfRunningTotals** | Cumulative percentage of running totals (client-side engine only) | Cumulative proportion tracking |
 | **DifferenceFrom** | Difference vs base | YoY comparison |
 | **PercentageOfGrandTotal** | % of grand total | Proportion analysis |
 | **PercentageOfColumnTotal** | % of column | Column proportion |
@@ -133,6 +134,27 @@ Limit which aggregation options appear in Field List and Grouping Bar using `Agg
         .Type(Syncfusion.EJ2.PivotView.SummaryTypes.RunningTotals)
         .Add();
 })
+```
+
+**Percentage of Running Totals (Cumulative Percentage):**
+
+Displays the cumulative percentage of running totals. Useful for analyzing how each member contributes to the running total over time. **Note:** This aggregation type is supported only on the client-side engine.
+
+```csharp
+@Html.EJS().PivotView("PivotView").DataSourceSettings(dataSource => dataSource
+        .DataSource((IEnumerable<object>)ViewBag.DataSource)
+        .Rows(rows => {
+            rows.Name("Country").Add();
+        })
+        .Columns(columns => {
+            columns.Name("Year").Add();
+        })
+        .Values(values => {
+            values.Name("Amount")
+                .Caption("Running %")
+                .Type(Syncfusion.EJ2.PivotView.SummaryTypes.PercentageOfRunningTotals)
+                .Add();
+        })).Height(450).Render()
 ```
 
 **Percentage of Grand Total:**

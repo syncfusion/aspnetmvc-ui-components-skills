@@ -131,7 +131,7 @@ Use this skill when building an ASP.NET MVC application and the user needs:
 ### Data shaping and analysis
 📄 **Read:** [references/aggregation.md](references/aggregation.md)
 - Summary types: Sum, Avg, Count, Min, Max, Product, Median, StDev, Variance
-- Percentage calculations and running totals
+- Percentage calculations and running totals (including PercentageOfRunningTotals)
 - Custom aggregation at runtime
 
 📄 **Read:** [references/calculated-field.md](references/calculated-field.md)
@@ -145,8 +145,10 @@ Use this skill when building an ASP.NET MVC application and the user needs:
 
 📄 **Read:** [references/filtering.md](references/filtering.md)
 - Member filtering with include/exclude
+- Append current selection to existing filters (incremental multi-member selection)
 - Label filtering (string, date, numeric)
-- Value filtering on aggregated data
+- Value filtering on aggregated data (Equals, Between, GreaterThan, LessThan, etc.)
+- Top and Bottom operators for value filtering (client-side ranking)
 
 📄 **Read:** [references/sorting.md](references/sorting.md)
 - Member field sorting (ascending/descending)

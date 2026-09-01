@@ -1,4 +1,4 @@
-# Exporting
+# Print and Export
 
 ## Table of Contents
 1. [Export to Excel](#export-to-excel)
@@ -6,6 +6,8 @@
 3. [Export to ICS](#export-to-ics)
 4. [Custom Fields Export](#custom-fields-export)
 5. [Export Options](#export-options)
+6. [Import from ICS](#import-from-ics)
+7. [Print Scheduler](#print-scheduler)
 
 ## Export to Excel
 
@@ -246,4 +248,83 @@ function exportScheduler(format) {
         exportScheduler('ICS');
     }
 </script>
+```
+
+## Import from ICS
+
+Import appointments from an iCalendar (.ics) file using the Syncfusion Uploader component together with the Scheduler's `importICalendar` method.
+
+### Uploader Configuration
+
+Restrict the Uploader to `.ics` files only, hide the file list and drag area, and hook the `Selected` event so the chosen file is forwarded to the Scheduler:
+
+```cshtml
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Schedule
+
+@Html.EJS().Schedule("schedule")
+    .Width("100%")
+    .Height("650px")
+    .Views(ViewData["view"])
+    .EventSettings(new ScheduleEventSettings { DataSource = ViewData["datasource"] })
+    .SelectedDate(new DateTime(DateTime.Today.Year, 1, 10))
+    .Render()
+
+@Html.EJS().Uploader("ics-import")
+    .AllowedExtensions(".ics")
+    .CssClass("calendar-import")
+    .Multiple(false)
+    .ShowFileList(false)
+    .Buttons(new Syncfusion.EJ2.Inputs.UploaderButtonsProps { Browse = "Choose file" })
+    .Selected("onSelected")
+    .Render()
+```
+
+### Import Selected File
+
+In the `Selected` handler, retrieve the Scheduler instance and call `importICalendar` with the selected file from the change event:
+
+```javascript
+function onSelected(args) {
+    var scheduleObj = document.getElementById('schedule').ej2_instances[0];
+    scheduleObj.importICalendar(args.event.target.files[0]);
+}
+```
+
+
+## Print Scheduler
+
+Print the Scheduler using its built-in client-side `print` method. By default the Scheduler opens the browser's print dialog using its current dimensions and selected date.
+
+### Basic Print
+
+Call `print()` with no arguments to open the print dialog with the Scheduler's current configuration:
+
+```cshtml
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Schedule
+
+@Html.EJS().Schedule("schedule")
+    .Width("100%")
+    .Height("650px")
+    .EventSettings(new ScheduleEventSettings { DataSource = ViewData["datasource"] })
+    .SelectedDate(new DateTime(DateTime.Today.Year, 1, 10))
+    .Render()
+
+@Html.EJS().Button("print-btn")
+    .Content("Print")
+    .IconCss("e-icons e-print")
+    .CssClass("e-print-btn")
+    .Render()
+```
+
+### Print Button Click Handler
+
+Wire a click handler to the print button that resolves the Scheduler instance and invokes the `print` method:
+
+```javascript
+document.getElementById("print-btn").addEventListener("click", function () {
+    var scheduleObj = document.getElementById('schedule').ej2_instances[0];
+    scheduleObj.print();
+});
 ```

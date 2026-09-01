@@ -306,7 +306,6 @@ public ActionResult Index()
         { 
             Option = Syncfusion.EJ2.Schedule.View.Month,
             ShowWeekend = false,
-            Readonly = true
         },
         
         // Day view with custom time range

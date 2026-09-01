@@ -12,10 +12,171 @@
 Set scheduler culture/language:
 
 ```cshtml
-@Html.EJS().Schedule("Schedule")
-    .Locale("es-ES") // Spanish (Spain)
+@using Syncfusion.EJ2.Schedule
+
+@(Html.EJS().Schedule("schedule")
+    .Width("100%")
+    .Height("550px")
+    .Locale("hu")
     .EventSettings(new ScheduleEventSettings { DataSource = ViewBag.datasource })
     .Render()
+)
+```
+```csharp
+<script>
+    var L10n = ej.base.L10n;
+    L10n.load({
+        "hu": {
+            "schedule": {
+                "day": "Nap",
+                "week": "Hét",
+                "workWeek": "Munkahét",
+                "month": "Hónap",
+                "year": "Év",
+                "agenda": "Napirend",
+                "weekAgenda": "Hét menetrend",
+                "workWeekAgenda": "Munkahét napirend",
+                "monthAgenda": "Havi menetrend",
+                "today": "Ma",
+                "noEvents": "Nincs esemény",
+                "emptyContainer": "Ezen a napon nincsenek események.",
+                "allDay": "Egész nap",
+                "start": "Rajt",
+                "end": "vég",
+                "more": "több",
+                "close": "Bezárás",
+                "cancel": "Megszünteti",
+                "noTitle": "(Nincs cím)",
+                "delete": "Töröl",
+                "deleteEvent": "Esemény törlése",
+                "deleteMultipleEvent": "Több esemény törlése",
+                "selectedItems": "A kiválasztott elemek",
+                "deleteSeries": "Sorozat törlése",
+                "edit": "szerkesztése",
+                "editSeries": "Szerkesztés",
+                "editEvent": "Esemény szerkesztése",
+                "createEvent": "teremt",
+                "subject": "Tantárgy",
+                "addTitle": "Cím hozzáadása",
+                "moreDetails": "További részletek",
+                "moreEvents": "Több esemény",
+                "save": "Mentés",
+                "editContent": "Csak ezt az eseményt vagy egész sorozatot szeretné szerkeszteni?",
+                "deleteRecurrenceContent": "Csak ezt az eseményt vagy egész sorozatot szeretné törölni?",
+                "deleteContent": "Biztosan törölni szeretné ezt az eseményt?",
+                "deleteMultipleContent": "Biztosan törli a kiválasztott eseményeket?",
+                "newEvent": "Új esemény",
+                "title": "Cím",
+                "location": "Elhelyezkedés",
+                "description": "Leírás",
+                "timezone": "Időzóna",
+                "startTimezone": "Indítsa el az időzónát",
+                "endTimezone": "Időzóna vége",
+                "repeat": "Ismétlés",
+                "saveButton": "Mentés",
+                "cancelButton": "Megszünteti",
+                "deleteButton": "Töröl",
+                "recurrence": "Ismétlődés",
+                "wrongPattern": "Az ismétlődési minta nem érvényes.",
+                "seriesChangeAlert": "A sorozat egyes példányaiban végrehajtott módosítások törlésre kerülnek, és ezek az események ismét megegyeznek a sorozattal.",
+                "createError": "Az esemény időtartamának rövidebbnek kell lennie, mint a gyakorisága. Rövidítse az időtartamot, vagy változtassa meg az ismétlődési esemény szerkesztőjének ismétlődési mintáját.",
+                "recurrenceDateValidation": "Néhány hónap kevesebb, mint a kiválasztott dátum. Ezekben a hónapokban az esemény a hónap utolsó napjára esik.",
+                "sameDayAlert": "Ugyanezen esemény két eseménye nem fordulhat elő ugyanazon a napon.",
+                "occurenceAlert": "Nem lehet átütemezni az ismétlődő találkozó előfordulását, ha átugrik ugyanazon találkozó későbbi előfordulását.",
+                "editRecurrence": "Ismétlés szerkesztése",
+                "repeats": "ismétlődés",
+                "alert": "Éber",
+                "startEndError": "A kiválasztott befejezési dátum a kezdő dátum előtt történik.",
+                "invalidDateError": "A megadott dátumérték érvénytelen.",
+                "blockAlert": "Az eseményeket nem lehet ütemezni a blokkolt időtartományon belül.",
+                "ok": "Rendben",
+                "yes": "Igen",
+                "no": "Nem",
+                "occurrence": "Esemény",
+                "series": "Sorozat",
+                "previous": "Előző",
+                "next": "Következő",
+                "timelineDay": "Idővonal napja",
+                "timelineWeek": "Idősor-hét",
+                "timelineWorkWeek": "Idővonal munkahét",
+                "timelineMonth": "Idővonal hónap",
+                "timelineYear": "Idővonal év",
+                "expandAllDaySection": "kiterjed",
+                "collapseAllDaySection": "összeomlás",
+                "editFollowingEvent": "Következő események",
+                "deleteTitle": "Esemény törlése",
+                "editTitle": "Esemény szerkesztése",
+                "beginFrom": "Kezdje",
+                "endAt": "Vége",
+                "searchTimezone": "Időzóna keresése",
+                "noRecords": "Nincs találat"
+            },
+            "recurrenceeditor": {
+                "none": "Egyik sem",
+                "daily": "Napi",
+                "weekly": "Heti",
+                "monthly": "Havi",
+                "month": "Hónap",
+                "yearly": "Évi",
+                "never": "Soha",
+                "until": "Amíg",
+                "count": "Számol",
+                "first": "Első",
+                "second": "Második",
+                "third": "Harmadik",
+                "fourth": "Negyedik",
+                "last": "Utolsó",
+                "repeat": "Ismétlés",
+                "repeatEvery": "Ismételje meg minden",
+                "on": "Ismétlés",
+                "end": "vég",
+                "onDay": "Nap",
+                "days": "Napok)",
+                "weeks": "Hét (ok)",
+                "months": "Hónap (ok)",
+                "years": "Évek)",
+                "every": "minden",
+                "summaryTimes": "idő (s)",
+                "summaryOn": "tovább",
+                "summaryUntil": "amíg",
+                "summaryRepeat": "ismétlődés",
+                "summaryDay": "napok)",
+                "summaryWeek": "heti (s)",
+                "summaryMonth": "hónap (ok)",
+                "summaryYear": "évek)",
+                "monthWeek": "Hónap",
+                "monthPosition": "Havi pozíció",
+                "monthExpander": "Hónaposító",
+                "yearExpander": "Év bővítő",
+                "repeatInterval": "Ismételje meg az intervallumot"
+            },
+            "calendar": {
+                "today": "Ma"
+            }
+        }
+    });
+    loadCultureFiles('hu');
+    function loadCultureFiles(name) {
+        var files = ['ca-gregorian.json', 'numberingSystems.json', 'numbers.json', 'timeZoneNames.json', 'ca-islamic.json'];
+        var loader = ej.base.loadCldr;
+        var loadCulture = function (prop) {
+            var val, ajax;
+            if (files[prop] === 'numberingSystems.json') {
+                ajax = new ej.base.Ajax(location.origin + '/../Scripts/cldr-data/supplemental/' + files[prop], 'GET', false);
+            } else {
+                ajax = new ej.base.Ajax(location.origin + '/../Scripts/cldr-data/main/' + name + '/' + files[prop], 'GET', false);
+            }
+            ajax.onSuccess = function (value) {
+                val = value;
+            };
+            ajax.send();
+            loader(JSON.parse(val));
+        };
+        for (var prop = 0; prop < files.length; prop++) {
+            loadCulture(prop);
+        }
+    }
+</script>
 ```
 
 ### Culture Code Format
@@ -32,6 +193,7 @@ Set scheduler culture/language:
 - `zh-TW` - Chinese (Traditional)
 - `ru-RU` - Russian
 - `ar-SA` - Arabic (Saudi Arabia)
+- `hu` - Hungarian (Hungary)
 
 ## Language Support
 
@@ -61,14 +223,34 @@ Supported languages:
 
 // Arabic
 .Locale("ar-SA")
+
+// Hungarian
+.Locale("hu")
 ```
 
-### Load Culture Files
-```html
-<script src="https://cdn.syncfusion.com/ej2/{{ site.ej2version }}/locale/es.js"></script>
-<script src="https://cdn.syncfusion.com/ej2/{{ site.ej2version }}/locale/fr.js"></script>
-<script src="https://cdn.syncfusion.com/ej2/{{ site.ej2version }}/locale/de.js"></script>
-```
+### Load Culture Files (CLDR)
+
+The Internationalization library formats and parses numbers, dates, and times using the official Unicode CLDR JSON data and exposes `loadCldr` to load culture-specific CLDR data. By default, the Scheduler uses `en-US`; for any other culture, follow the short setup below.
+
+1. **Install the CLDR-Data package** (it ships the culture-specific CLDR JSON files; see its README for details):
+   ```bash
+   npm install cldr-data --save
+   ```
+   After install, the culture JSON data lives under `node_modules/cldr-data`.
+
+2. **Mirror the required JSON files into the project** under `Scripts/`:
+   - Create the folders `Scripts/cldr-data/supplemental` and `Scripts/cldr-data/main`.
+   - Copy `numberingSystems.json` from `node_modules/cldr-data/supplemental` into `Scripts/cldr-data/supplemental` (this file is shared by every culture).
+   - From `node_modules/cldr-data/main/<culture_code>` (e.g. `de`, `hu`, `fr`, `es`, ...), create a matching folder under `Scripts/cldr-data/main` (e.g. `Scripts/cldr-data/main/hu`) and copy the culture's JSON files.
+
+   Files required by the Scheduler (5 total per culture):
+   - `numberingSystems.json` (supplemental — shared)
+   - `ca-gregorian.json`
+   - `numbers.json`
+   - `timeZoneNames.json`
+   - `ca-islamic.json`
+
+3. **Load the files at runtime** with `ej.base.loadCldr` via a small `loadCultureFiles(name)` helper (see the *Custom Locale Strings* section — the Hungarian example ends with `loadCultureFiles('hu')`).
 
 ## Date and Time Formats
 

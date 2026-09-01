@@ -60,7 +60,6 @@ Modify existing appointments:
 )
 ```
 
-### Inline Editing
 ```javascript
 // Click on appointment to edit
 var schedule = document.getElementById('schedule').ej2_instances[0];

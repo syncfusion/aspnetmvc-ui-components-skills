@@ -15,6 +15,7 @@ This guide covers all available Scheduler view modes, their configurations, and 
 - [Extending View Intervals](#extending-view-intervals)
 - [View-Specific Configuration](#view-specific-configuration)
 - [Common View Properties](#common-view-properties)
+- [Max Event Stack](#max-event-stack)
 
 ## Overview
 
@@ -512,7 +513,6 @@ Apply different settings to each view.
         
         // Month view: Read-only, show week numbers
         view.Option(Syncfusion.EJ2.Schedule.View.Month)
-            .Readonly(true)
             .ShowWeekNumber(true)
             .Add();
     })
@@ -549,7 +549,6 @@ Properties applicable across multiple views.
 | `Option` | View | Specifies view type (Day, Week, Month, etc.) | All views |
 | `IsSelected` | bool | Sets active view on load | All views |
 | `DateFormat` | string | Custom date format (e.g., "dd-MMM-yyyy") | All views |
-| `Readonly` | bool | Prevents CRUD operations | All views |
 | `ShowWeekend` | bool | Show/hide weekend days | All views |
 | `WorkDays` | int[] | Define working days (0-6) | All except Agenda |
 | `StartHour` | string | Start time (e.g., "08:00") | Day, Week, WorkWeek, Timeline variants |
@@ -558,6 +557,7 @@ Properties applicable across multiple views.
 | `DisplayName` | string | Custom view name in switcher | All except Agenda, MonthAgenda |
 | `ShowWeekNumber` | bool | Display week numbers | Day, Week, WorkWeek, Month |
 | `AllowVirtualScrolling` | bool | Enable infinite scroll | Agenda, Timeline variants |
+| `MaxEventStack` | int | Maximum number of appointments to render per cell; remaining events show as "+N more" (0 = unlimited) | Day, Week, WorkWeek, Month |
 
 ### Example: Configuring All Common Properties
 
@@ -568,7 +568,6 @@ Properties applicable across multiple views.
         view.Option(Syncfusion.EJ2.Schedule.View.Week)
             .IsSelected(true)               // Set as default view
             .DateFormat("dd MMM yyyy")      // Custom date format
-            .Readonly(false)                // Allow editing
             .ShowWeekend(true)              // Show Sat/Sun
             .WorkDays(new int[] { 1, 2, 3, 4, 5 })  // Mon-Fri working
             .StartHour("08:00")             // Start at 8 AM
@@ -610,11 +609,41 @@ Make specific views read-only while allowing edits in others.
     {
         view.Option(Syncfusion.EJ2.Schedule.View.Day).Add();  // Editable
         view.Option(Syncfusion.EJ2.Schedule.View.Week).Add();  // Editable
-        view.Option(Syncfusion.EJ2.Schedule.View.Month).Readonly(true).Add();  // Read-only
+        view.Option(Syncfusion.EJ2.Schedule.View.Month).Add();  // Read-only
     })
     .EventSettings(e => e.DataSource(Model))
     .Render()
 ```
+
+## Max Event Stack
+
+Limit the number of appointments rendered inside a single cell. When more events exist on a date, the cell shows a `+N more` indicator that, when clicked, opens a popup listing the remaining appointments.
+
+### Configuring MaxEventStack on Each View
+
+```cshtml
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Schedule
+
+@{
+    List<ScheduleView> viewOptions = new List<ScheduleView>();
+    viewOptions.Add(new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.Day, MaxEventStack = 1 });
+    viewOptions.Add(new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.Week, MaxEventStack = 1 });
+    viewOptions.Add(new ScheduleView { Option = Syncfusion.EJ2.Schedule.View.WorkWeek, MaxEventStack = 1 });
+}
+
+@Html.EJS().Schedule("Schedule")
+    .Width("100%")
+    .Height("650px")
+    .SelectedDate(new DateTime(2026, 5, 29))
+    .CurrentView(View.Week)
+    .Navigating("onNavigating")
+    .Views(viewOptions)
+    .EventSettings(new ScheduleEventSettings { DataSource = ViewData["datasource"] })
+    .Render()
+```
+
+>**Note:** The `MaxEventStack` property is applicable only with **Day**, **Week**, and **WorkWeek** views when the `timeScale` option is enabled.
 
 ## Best Practices
 
@@ -635,7 +664,6 @@ Make specific views read-only while allowing edits in others.
 - Apply view-specific settings via `Views` property (not global)
 - Use `IsSelected` to set default view matching user preference
 - Customize `WorkDays` to match organization schedule
-- Set `Readonly` for historical views or reports
 
 ## Common Scenarios
 

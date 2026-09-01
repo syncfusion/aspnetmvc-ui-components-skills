@@ -6,6 +6,7 @@
 3. [Date Picker Integration](#date-picker-integration)
 4. [Navigation Controls](#navigation-controls)
 5. [Header Styling](#header-styling)
+6. [Date Header Templates](#date-header-templates)
 
 ## Header Bar Configuration
 
@@ -218,6 +219,85 @@ Customize header appearance:
     .e-schedule .e-toolbar .e-btn {
         font-size: 12px;
         padding: 6px 8px;
+    }
+}
+```
+
+## Date Header Templates
+
+Customize the content displayed in each date header cell on the Scheduler. Use the `DateHeaderTemplate` method along with `RenderCell` to compose rich headers that combine formatted date text, images, temperature readings, and any custom markup.
+
+### Basic Date Header Template
+
+Define a `<script>` template and bind it using `DateHeaderTemplate`:
+
+```cshtml
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Schedule
+
+@Html.EJS().Schedule("schedule")
+    .Width("100%")
+    .Height("650px")
+    .Views(ViewData["view"])
+    .RenderCell("onRenderCell")
+    .EventRendered("onEventRendered")
+    .EventSettings(new ScheduleEventSettings { DataSource = ViewData["datasource"] })
+    .CssClass("schedule-date-header-template")
+    .DateHeaderTemplate("#template")
+    .SelectedDate(new DateTime(DateTime.Today.Year, 1, 10))
+    .Render()
+```
+
+### Template Script Block
+
+The template receives the `data` object exposing properties such as `data.date`. Use interpolation to render date text and append additional markup such as images or labels:
+
+```html
+<script id="template" type="text/template">
+    <div class="date-text">${getDateHeaderText(data.date)}</div>
+    ${getWeather(data.date)}
+</script>
+```
+
+### Format Date Text with Internationalization
+
+Use the `Internationalization` instance to format the date string with a culture-specific skeleton (for example, `Ed` outputs a short day format like "Mon" or "Tue"):
+
+```javascript
+var instance = new ej.base.Internationalization();
+window.getDateHeaderText = function (value) {
+    return instance.formatDate(value, { skeleton: 'Ed' });
+};
+```
+
+### Append Dynamic Content to the Header
+
+Build the secondary content (such as a weather icon and temperature) programmatically and return it as HTML. The function receives the current cell date and switches on the day of the week:
+
+```javascript
+function getWeather(value) {
+    switch (value.getDay()) {
+        case 0:
+            return '<img class="weather-image" src="@Url.Content("~/Content/schedule/images/weather-clear.svg")" /><div class="weather-text">25&degC</div>';
+        case 1:
+            return '<img class="weather-image" src="@Url.Content("~/Content/schedule/images/weather-clouds.svg")" /><div class="weather-text">18&degC</div>';
+        // ...continue for other days
+        default:
+            return null;
+    }
+}
+```
+
+### Adding Decorations to Month View Cells
+
+Combine `RenderCell` with the date header template so the same helper can decorate the body cells of Month view. This keeps the weather image consistent across the header and the month grid:
+
+```javascript
+function onRenderCell(args) {
+    if (this.currentView === 'Month' && args.elementType === 'monthCells') {
+        var ele = document.createElement('div');
+        ele.innerHTML = getWeather(args.date);
+        (args.element).appendChild(ele.firstChild);
     }
 }
 ```

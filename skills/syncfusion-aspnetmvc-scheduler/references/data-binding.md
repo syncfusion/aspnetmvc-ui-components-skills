@@ -76,8 +76,7 @@ public ActionResult GetEvents()
             e.Location,
             e.ResourceId
         }).ToList();
-        
-        return Json(new { result = safeEvents }, JsonRequestBehavior.AllowGet);
+        return Json(safeEvents);
     }
     catch (Exception ex)
     {
@@ -92,18 +91,22 @@ public ActionResult GetEvents()
 ```cshtml
 @using Syncfusion.EJ2.Schedule
 
+@{
+    var dataManager = new Syncfusion.EJ2.DataManager
+    {
+        Url     = Url.Action("GetData", "Home"),
+        CrudUrl = Url.Action("UpdateData", "Home"),
+        Adaptor = "UrlAdaptor",
+        Headers = new Dictionary<string, object> { 
+            // ✅ SECURITY: Include anti-forgery token for cross-domain requests
+            { "X-CSRF-TOKEN", @Html.AntiForgeryToken() }
+        }
+    };
+}
+
 @(Html.EJS().Schedule("schedule")
     .Height("550px")
-    .EventSettings(new ScheduleEventSettings {
-        DataSource = new DataManager {
-            Url = "/Home/GetEvents",
-            Adaptor = "UrlAdaptor",
-            Headers = new Dictionary<string, object> { 
-                // ✅ SECURITY: Include anti-forgery token for cross-domain requests
-                { "X-CSRF-TOKEN", @Html.AntiForgeryToken() }
-            }
-        }
-    })
+    .EventSettings(new ScheduleEventSettings { DataSource = dataManager })
     .SelectedDate(new DateTime(2024, 1, 15))
     .Render()
 )

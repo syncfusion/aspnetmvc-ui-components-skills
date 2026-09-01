@@ -88,6 +88,7 @@ The Scheduler component provides:
 - Sorting overlapping events (sortComparer)
 - Appointments occupying full cell height (enableMaxHeight)
 - Custom appointment colors and backgrounds
+- Quick Info popup customization
 
 ### Views and Navigation
 📄 **Read:** [references/views.md](references/views.md)
@@ -102,6 +103,7 @@ The Scheduler component provides:
 - Agenda view with virtual scrolling (agendaDaysCount, hideEmptyAgendaDays)
 - Month-Agenda view
 - Extending view intervals with displayName
+- MaxEventStack appointment limit per cell
 
 📄 **Read:** [references/timeline-views.md](references/timeline-views.md)
 - Timeline Day, Week, Work Week views
@@ -146,7 +148,6 @@ The Scheduler component provides:
 ### Cell and UI Customization
 📄 **Read:** [references/cell-customization.md](references/cell-customization.md)
 - Work cell templates (cellTemplate)
-- Date header templates (dateHeaderTemplate)
 - Resource header templates (resourceHeaderTemplate)
 - RenderCell event for conditional cell styling
 - Cell click and double-click handling
@@ -235,12 +236,16 @@ The Scheduler component provides:
 - Header rows for timeline views (year, month, week, date, hour)
 - Custom navigation buttons
 - Header item templates
+- Date header templates (dateHeaderTemplate) with template scripts, formatted date text, and dynamic content like weather icons
+- Combining DateHeaderTemplate with RenderCell for Month view decorations
 
-### Exporting
-📄 **Read:** [references/exporting.md](references/exporting.md)
+### Print and Export
+📄 **Read:** [references/print-and-export.md](references/print-and-export.md)
 - Export to Excel (exportToExcel method)
 - Export to PDF (exportToPdf method) with page settings
 - Export to ICS/iCalendar format (exportToICalendar method)
+- Import iCalendar files (importICalendar) via Uploader
+- Print the Scheduler with default options (print method)
 - Custom export fields and field mapping
 - Export selected events only
 - Export options (fileName, exportType, customData)
@@ -251,13 +256,14 @@ The Scheduler component provides:
 📄 **Read:** [references/advanced-features.md](references/advanced-features.md)
 - State persistence (enablePersistence) across page reloads
 - Virtual scrolling for Agenda and Timeline views (allowVirtualScrolling)
-- Row auto height (rowAutoHeight) for timeline resources
+- Row auto height (rowAutoHeight) for Timeline views with adaptive resource rows
 - Working days configuration (workDays property)
 - Start and end hour (startHour, endHour)
 - Scheduler dimensions (width, height)
 - Clipboard operations (cut, copy, paste events)
 - Recurrence editor component (standalone)
 - Calendar modes (Gregorian, Islamic calendar)
+- Adaptive UI rendering with EnableAdaptiveUI for mobile-friendly layouts
 
 ## Security Considerations
 

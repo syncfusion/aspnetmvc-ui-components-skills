@@ -8,6 +8,7 @@
 5. [Clipboard Operations](#clipboard-operations)
 6. [Recurrence Editor](#recurrence-editor)
 7. [Calendar Modes](#calendar-modes)
+8. [Adaptive UI](#adaptive-ui)
 
 ## State Persistence
 
@@ -71,7 +72,7 @@ Automatically adjust row height for content:
 
 ```cshtml
 @Html.EJS().Schedule("Schedule")
-    .EnableAutoHeightRows(true)
+    .RowAutoHeight(true)
     .Views(new string[] { "TimelineDay", "TimelineWeek" })
     .Render()
 ```
@@ -201,5 +202,21 @@ Support different calendar systems:
     .CalendarMode(CalendarMode.Islamic)
     .Locale("ar-SA")
     .Timezone("Asia/Dubai")
+    .Render()
+```
+
+## Adaptive UI
+
+Render the Scheduler with a responsive, mobile-friendly UI optimized for small screens. When `EnableAdaptiveUI` is set to `true`, the Scheduler adjusts its layout (toolbar, events list, event dialog) to fit narrow viewports and provides a touch-optimized experience.
+
+```cshtml
+@using Syncfusion.EJ2
+@using Syncfusion.EJ2.Schedule
+
+@Html.EJS().Schedule("schedule")
+    .Width("100%")
+    .Height("650px")
+    .EnableAdaptiveUI(true)
+    .CurrentView(View.Month)
     .Render()
 ```

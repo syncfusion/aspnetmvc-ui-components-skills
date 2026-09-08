@@ -258,37 +258,6 @@ Or embed unit in duration string: `"4 hours"`, `"30 minutes"`.
 
 ---
 
-## Baseline
-
-Show planned vs. actual task dates side-by-side:
-
-```csharp
-public class GanttData
-{
-    // ... other fields
-    public DateTime BaselineStartDate { get; set; }
-    public DateTime BaselineEndDate { get; set; }
-    public int? BaselineDuration { get; set; }
-}
-```
-
-```cshtml
-@Html.EJS().Gantt("gantt")
-    .TaskFields(tf => tf
-        .Id("TaskId").Name("TaskName").StartDate("StartDate").EndDate("EndDate").Duration("Duration")
-        .BaselineStartDate("BaselineStartDate")
-        .BaselineEndDate("BaselineEndDate")
-        .Child("SubTasks")
-    )
-    .RenderBaseline(true)
-    .BaselineColor("#fc7b00")   // optional color override
-    .Render()
-```
-
-> To show a baseline milestone, set `BaselineDuration = 0` explicitly. Matching start/end dates without duration = 0 renders a 1-day baseline task.
-
----
-
 ## Task Constraints
 
 Task constraints define scheduling rules that restrict when a task is allowed to start or finish.

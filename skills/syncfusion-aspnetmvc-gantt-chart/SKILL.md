@@ -103,6 +103,7 @@ Use this skill when you need to:
 - Zooming in and out (`ZoomIn`, `ZoomOut`, `ZoomToFit`)
 - Custom timeline units and formats
 - Timeline template
+- Infinite timeline scrolling (`EnableInfiniteTimelineScroll`)
 
 ### Task Scheduling
 📄 **Read:** [references/task-scheduling.md](references/task-scheduling.md)
@@ -110,7 +111,15 @@ Use this skill when you need to:
 - Duration units (Day, Hour, Minute, Week, Month)
 - Unscheduled tasks
 - Task constraints (ALAP, ASAP, FNLT, SNLT, MSO, MFO)
-- Baseline display
+
+### Baseline
+📄 **Read:** [references/baseline.md](references/baseline.md)
+- Baseline fields: `BaselineStartDate`, `BaselineEndDate`, `BaselineDuration`
+- Enable baseline with `RenderBaseline(true)`
+- Customize baseline color and CSS styling
+- Baseline templates for custom rendering
+- Multiple baseline rendering using task-specific fields
+- Baseline milestones and advanced visualization
 
 ### Selection
 📄 **Read:** [references/selection.md](references/selection.md)
@@ -264,6 +273,7 @@ Use this skill when you need to:
 - Task utilities: `convertToMilestone()`, `updateTaskId()`, `updateDataSource()`, `updateRecordByID()`
 - Scrolling: `scrollToDate()`, `scrollToTask()`, `setScrollTop()`, `updateChartScrollOffset()`
 - Search: `search(keyword)` — programmatic search across displayed columns
+- Selection: `selectCells()` — programmatically select one or more cells
 - Lifecycle: `refresh()`, `dataBind()`, `addEventListener()`, `removeEventListener()`
 
 ## Quick Start Example

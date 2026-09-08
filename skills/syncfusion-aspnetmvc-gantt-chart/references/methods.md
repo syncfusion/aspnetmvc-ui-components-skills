@@ -14,6 +14,8 @@
 - [Search](#search)
 - [Component Lifecycle Methods](#component-lifecycle-methods)
 - [Split and Merge Tasks](#split-and-merge-tasks)
+- [Selection](#selection)
+  - [selectCells](#selectcells)
 
 ---
 
@@ -412,4 +414,135 @@ Merges previously split task segments back into one taskbar. Requires `EditSetti
 ```javascript
 var ganttObj = document.getElementById('gantt').ej2_instances[0];
 ganttObj.mergeTask(3, [{ firstSegmentIndex: 0, secondSegmentIndex: 1 }]);
+```
+
+### changeTaskMode
+
+Switches the Gantt editing mode for a task (for example, from view mode to edit mode).
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.changeTaskMode(3, 'Edit');
+```
+
+### clearRedoCollection
+
+Clears the redo collection used by undo/redo operations.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.clearRedoCollection();
+```
+
+### clearUndoCollection
+
+Clears the undo collection used by undo/redo operations.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.clearUndoCollection();
+```
+
+### collapseByIndex
+
+Collapses rows by their row index (0-based) in the chart area.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.collapseByIndex(1);
+```
+
+### collapseByID
+
+Collapses a row by its task ID.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.collapseByID(3);
+```
+
+### enableItems
+
+Enables the specified set of Gantt items.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.enableItems([3, 4], true);
+```
+
+### expandByIndex
+
+Expands rows by their row index (0-based) in the chart area.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.expandByIndex([0, 2]);
+```
+
+### expandByID
+
+Expands a row by its task ID.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.expandByID(3);
+```
+
+### getTaskInfo
+
+Returns task information for a given task ID.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var info = ganttObj.getTaskInfo(3);
+console.log(info);
+```
+
+### getTaskbarHeight
+
+Returns the current height of the taskbar.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var h = ganttObj.getTaskbarHeight();
+console.log(h);
+```
+
+### getUndoActions
+
+Returns the list of available undo actions.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var actions = ganttObj.getUndoActions();
+console.log(actions);
+```
+
+### getRedoActions
+
+Returns the list of available redo actions.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var actions = ganttObj.getRedoActions();
+console.log(actions);
+```
+
+### getWorkString
+
+Converts work quantity and unit string into a human-readable work summary.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var workStr = ganttObj.getWorkString(8, 'hour');
+console.log(workStr); // "8 hours"
+```
+
+### selectCells
+
+Programmatically selects one or more cells.
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+ganttObj.selectCells([{ index: 2, col: 'TaskName' }]);
 ```

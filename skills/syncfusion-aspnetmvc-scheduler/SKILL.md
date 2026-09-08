@@ -195,6 +195,10 @@ The Scheduler component provides:
 - Saving custom field data
 - Multi-field editor forms
 - Validation in custom editors
+- Dependent Fields
+- DateTime Picker
+- Dropdown Fields
+- Custom Styling
 
 ### TimeScale Configuration
 📄 **Read:** [references/timescale.md](references/timescale.md)

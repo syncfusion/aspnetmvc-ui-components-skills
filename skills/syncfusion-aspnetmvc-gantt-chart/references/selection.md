@@ -19,6 +19,7 @@
   - [Customize Cell Selection Action](#customize-cell-selection-action)
 - [Get Selected Row Indexes and Records](#get-selected-row-indexes-and-records)
 - [Clear Selection](#clear-selection)
+- [Hierarchy Checkbox Mode](#hierarchy-checkbox-mode)
 - [Touch Interaction](#touch-interaction)
 
 ---
@@ -399,6 +400,277 @@ var ganttObj = document.getElementById('gantt').ej2_instances[0];
 ganttObj.selectionModule.selectRows([1, 2, 3]);
 ganttObj.clearSelection();   // deselect all
 ```
+
+---
+
+## Hierarchy Checkbox Mode
+
+The hierarchy checkbox mode controls how checkbox selection propagates across parent and child task records in the hierarchy. When you enable checkbox selection combined with a hierarchy mode, selecting a parent or child checkbox automatically manages the selection state of related records.
+
+Set `HierarchyCheckboxMode` to `Self`, `Hierarchy`, or `FilteredHierarchy`. The default is `Hierarchy`. This setting controls checkbox propagation; enable selection and define a checkbox column as well.
+
+| API | Type | Default | Requirement |
+|---|---|---|---|
+| `HierarchyCheckboxMode` | `string` | `Hierarchy` | Use with checkbox selection and a checkbox column |
+
+### Enable Checkbox Selection with Hierarchy Mode
+
+First, add a checkbox column. Then use `HierarchyCheckboxMode` to define how selection propagates:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .Height("450px")
+    .AllowSelection(true)
+    .CheckboxSelection(true)  // Enable checkbox selection
+    .SelectionSettings(ss => ss
+        .Mode(Syncfusion.EJ2.Grids.SelectionMode.Row)
+        .Type(Syncfusion.EJ2.Grids.SelectionType.Multiple)
+    )
+    .HierarchyCheckboxMode("Hierarchy")   // Propagate selection through hierarchy
+    .TaskFields(tf => tf
+        .Id("TaskId").Name("TaskName").StartDate("StartDate")
+        .Duration("Duration").Child("SubTasks")
+    )
+    .Columns(col =>
+        {
+            col.Field("CheckBox").HeaderText("").ShowCheckbox(true).Width(70).AllowFiltering(false).Add();
+            col.Field("TaskId").Visible(false).Add();
+            col.Field("TaskName").Width(260).HeaderText("Task Name").AllowReordering(false).Add();
+            col.Field("StartDate").HeaderText("Start Date").Width(140).Add();
+            col.Field("Predecessor").Width(190).HeaderText("Predecessor").Add();
+            col.Field("Duration").HeaderText("Duration").AllowEditing(false).Add();
+            col.Field("Progress").HeaderText("Progress").Add();
+        })
+    .Render()
+```
+
+### Hierarchy Checkbox Mode Values
+
+| Mode | Description | Behavior |
+|------|-------------|----------|
+| `Self` | Selection applies to clicked record only | Selecting a parent does **not** select its children; selecting a child does **not** affect the parent |
+| `Hierarchy` | Selection propagates through the entire hierarchy (default for checkbox) | Selecting a parent selects all descendants; selecting a child updates ancestor states accordingly |
+| `FilteredHierarchy` | Selection propagates only within the currently visible filtered results | Selecting a parent in filtered view selects only visible descendants; hidden records remain unaffected |
+
+The checkbox column can also be declared explicitly with `Field("CheckBox").ShowCheckbox(true)`. Keep the checkbox column and hierarchy mode configuration together so the mode applies to checkbox interactions.
+
+### Mode Behavior: Self
+
+In `Self` mode, checkbox selection is independent for each record. No automatic propagation occurs:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("Self")
+    .SelectionSettings(ss => ss
+        .Type(Syncfusion.EJ2.Grids.SelectionType.Multiple)
+    )
+    .Columns(col =>
+        {
+            col.Field("CheckBox").HeaderText("").ShowCheckbox(true).Width(70).AllowFiltering(false).Add();
+            col.Field("TaskId").Visible(false).Add();
+            col.Field("TaskName").Width(260).HeaderText("Task Name").AllowReordering(false).Add();
+            col.Field("StartDate").HeaderText("Start Date").Width(140).Add();
+            col.Field("Predecessor").Width(190).HeaderText("Predecessor").Add();
+            col.Field("Duration").HeaderText("Duration").AllowEditing(false).Add();
+            col.Field("Progress").HeaderText("Progress").Add();
+        })
+    .Render()
+```
+
+**Example:**
+- When you select the parent "Project", only the "Project" row is checked.
+- Child rows remain unchecked.
+- Selecting a child row does not affect the parent's checkbox state.
+
+### Mode Behavior: Hierarchy
+
+In `Hierarchy` mode, selecting a parent automatically selects all descendant tasks. Selecting a child updates the parent's state based on how many children are selected:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("Hierarchy")
+    .SelectionSettings(ss => ss
+        .Type(Syncfusion.EJ2.Grids.SelectionType.Multiple)
+    )
+    .Columns(col =>
+        {
+            col.Field("CheckBox").HeaderText("").ShowCheckbox(true).Width(70).AllowFiltering(false).Add();
+            col.Field("TaskId").Visible(false).Add();
+            col.Field("TaskName").Width(260).HeaderText("Task Name").AllowReordering(false).Add();
+            col.Field("StartDate").HeaderText("Start Date").Width(140).Add();
+            col.Field("Predecessor").Width(190).HeaderText("Predecessor").Add();
+            col.Field("Duration").HeaderText("Duration").AllowEditing(false).Add();
+            col.Field("Progress").HeaderText("Progress").Add();
+        })
+    .Render()
+```
+
+**Selection propagation rules:**
+
+- **Selecting a parent checkbox**: All child rows (direct and indirect descendants) are checked.
+- **Deselecting a parent checkbox**: All child rows are unchecked.
+- **Selecting a child checkbox**: The selection state of ancestor records is updated according to the hierarchy selection rules.
+- **Deselecting all children**: The parent checkbox becomes unchecked.
+
+**Example with data:**
+```
+Project (Parent)
+├── Design (Child 1)
+│   ├── Mockup (Grandchild 1.1)
+│   └── Prototype (Grandchild 1.2)
+├── Development (Child 2)
+│   ├── Backend (Grandchild 2.1)
+│   └── Frontend (Grandchild 2.2)
+└── Testing (Child 3)
+```
+
+When you check "Project":
+- All 8 rows (Project + 2 children + 5 grandchildren) are checked.
+
+When only some descendants are selected, ancestor selection state reflects the resulting hierarchy selection.
+
+### Mode Behavior: FilteredHierarchy
+
+In `FilteredHierarchy` mode, hierarchy selection propagation applies only to visible (non-filtered-out) records. Hidden records are not affected:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .AllowFiltering(true)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("FilteredHierarchy")
+    .SelectionSettings(ss => ss
+        .Type(Syncfusion.EJ2.Grids.SelectionType.Multiple)
+    )
+    .Columns(col =>
+        {
+            col.Field("CheckBox").HeaderText("").ShowCheckbox(true).Width(70).AllowFiltering(false).Add();
+            col.Field("TaskId").Visible(false).Add();
+            col.Field("TaskName").Width(260).HeaderText("Task Name").AllowReordering(false).Add();
+            col.Field("StartDate").HeaderText("Start Date").Width(140).Add();
+            col.Field("Predecessor").Width(190).HeaderText("Predecessor").Add();
+            col.Field("Duration").HeaderText("Duration").AllowEditing(false).Add();
+            col.Field("Progress").HeaderText("Progress").Add();
+        })
+    .Render()
+```
+
+**Behavior:**
+- When you filter tasks by status = "Active", only active rows are visible.
+- Selecting a parent in the filtered view selects only its visible children.
+- Child rows hidden by the filter remain unchanged (not selected).
+- When you clear the filter, previously hidden records appear with their original selection state.
+
+**Example:**
+
+Original state:
+- All 10 tasks: 3 checked, 7 unchecked.
+
+After filtering to show only Active tasks (5 tasks visible):
+- You select "Project" checkbox.
+- Only the 3 visible descendants of "Project" are checked.
+- The 4 inactive descendants remain unchecked (still hidden by filter).
+
+After clearing filter:
+- The 3 active descendants remain checked.
+- The 4 inactive descendants remain unchecked.
+
+### Interaction with Other Features
+
+#### Virtualization
+
+When virtual scrolling is enabled, hierarchy checkbox mode still works correctly:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.LargeDataSet)
+    .EnableVirtualization(true)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("Hierarchy")
+    .Render()
+```
+
+- Selection state is preserved as you scroll.
+- Indeterminate parent states are calculated correctly based on child selection.
+
+#### Sorting
+
+When rows are sorted, the hierarchy checkbox mode still propagates selection correctly:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .AllowSorting(true)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("Hierarchy")
+    .Render()
+```
+
+- Sorting does not change the hierarchy structure or selection behavior.
+- Parent-child relationships are preserved regardless of sort order.
+
+#### Expanding and Collapsing
+
+When parent tasks are collapsed, child checkboxes are hidden but their selection state is preserved:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .CheckboxSelection(true)
+    .HierarchyCheckboxMode("Hierarchy")
+    .Columns(col =>
+        {
+            col.Field("CheckBox").HeaderText("").ShowCheckbox(true).Width(70).AllowFiltering(false).Add();
+            col.Field("TaskId").Visible(false).Add();
+            col.Field("TaskName").Width(260).HeaderText("Task Name").AllowReordering(false).Add();
+            col.Field("StartDate").HeaderText("Start Date").Width(140).Add();
+            col.Field("Predecessor").Width(190).HeaderText("Predecessor").Add();
+            col.Field("Duration").HeaderText("Duration").AllowEditing(false).Add();
+            col.Field("Progress").HeaderText("Progress").Add();
+        })
+    .Render()
+```
+
+- Collapsing a parent with checked children shows the parent as checked.
+- Expanding reveals that children are still checked.
+- Unchecking a collapsed parent unchecks all its children, even though they are not visible.
+
+#### Paging
+
+With paging, interpret checkbox propagation against the loaded data subset. Use `FilteredHierarchy` when selection should be limited to records available in the current filtered or page-scoped view. Verify behavior when changing pages, because records outside the loaded subset are not part of the current page interaction.
+
+#### Row and Cell Selection
+
+Hierarchy mode governs checkbox propagation and is configured separately from ordinary row or cell selection. Checkbox selection can be combined with multiple row selection. Cell selection remains independent; checking a hierarchy row does not imply that its cells are selected.
+
+### Getting Selected Records with Hierarchy Mode
+
+When using hierarchy checkbox mode, use the same methods to retrieve selected rows:
+
+```javascript
+var ganttObj = document.getElementById('gantt').ej2_instances[0];
+var selectedIndexes = ganttObj.selectionModule.getSelectedRowIndexes();
+var selectedRecords = ganttObj.selectionModule.getSelectedRecords();
+```
+
+Use the selection APIs to retrieve selected indexes and records after hierarchy propagation. Verify whether an operation should include hidden descendants, particularly when filtering, collapsing, or paging is enabled.
+
+### Best Practices
+
+1. **Choose the Right Mode**: Use `Hierarchy` for projects where selecting a phase should select all related activities. Use `Self` for independent task selection.
+
+2. **Document Selection Behavior**: Clearly communicate to users whether selecting a task will automatically select its subtasks.
+
+3. **Validate Before Bulk Operations**: When performing actions on selected tasks (e.g., bulk edit, bulk delete), verify the selection includes all intended records, especially with `FilteredHierarchy`.
+
+4. **Test Filtering Combinations**: After enabling `FilteredHierarchy`, test selecting, filtering, clearing, and re-filtering to ensure selection state is preserved correctly.
+
+5. **Test Combined Views**: Test expanded and collapsed rows, filtering, sorting, virtualization, and paging together when those features are enabled.
 
 ---
 

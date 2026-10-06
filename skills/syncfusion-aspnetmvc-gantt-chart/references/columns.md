@@ -8,6 +8,7 @@
 - [Column Type](#column-type)
 - [Column Format](#column-format)
 - [Checkbox Column](#checkbox-column)
+- [Serial Number Column](#serial-number-column)
 - [Show or Hide Columns Dynamically](#show-or-hide-columns-dynamically)
 - [Controlling Column Actions](#controlling-column-actions)
 - [Frozen Columns](#frozen-columns)
@@ -235,6 +236,52 @@ To show a selection checkbox column (for multi-select), use the built-in `Checkb
     .TaskFields(tf => tf.Id("TaskId").Name("TaskName").StartDate("StartDate").Duration("Duration").Child("SubTasks"))
     .Render()
 ```
+
+---
+
+## Serial Number Column
+
+The built-in serial number column generates sequential numbers for rows in the current visible order. It does not require a serial-number field in the task data. Enable the feature with `EnableSerialNumber(true)` and declare a column with `Field("SerialNumber")`.
+
+| Configuration | Type | Default | Requirement |
+|---|---|---|---|
+| `EnableSerialNumber` | `bool` | `false` | Set to `true` to enable generated row numbering |
+| Column `Field` | `string` | None | Add a dedicated column with the value `SerialNumber` |
+
+```cshtml
+@Html.EJS().Gantt("Gantt")
+    .DataSource((IEnumerable<object>)ViewBag.DataSource)
+    .Height("450px")
+    .EnableSerialNumber(true)
+    .TaskFields(tf => tf
+        .Id("TaskID").Name("TaskName").StartDate("StartDate")
+        .Duration("Duration").Progress("Progress").ParentID("ParentID")
+    )
+    .Columns(col =>
+    {
+        col.Field("SerialNumber").HeaderText("S.No").Width("80").Add();
+        col.Field("TaskID").HeaderText("ID").Width("90").Add();
+        col.Field("TaskName").HeaderText("Task Name").Width("250").Add();
+        col.Field("StartDate").HeaderText("Start Date").Width("140").Add();
+        col.Field("Duration").Width("100").Add();
+    })
+    .Render()
+```
+
+### Serial Number Behavior
+
+Numbers reflect the rendered row order, not the original order or a persisted task identifier. Gantt recalculates them when visible rows change, including sorting, filtering or searching, expanding or collapsing parent tasks, indenting or outdenting, CRUD operations, row drag and drop, and data refresh. The feature supports hierarchical data and keeps numbering aligned with the visible rows during virtualization.
+
+### Paging and Other Viewport-Based Operations
+
+The serial number feature is based on the current visible row sequence. The Gantt reference does not specify whether numbers continue across pages or restart on each page when paging is integrated through the grid. Verify the desired page behavior in the application, and do not use the generated value as a stable identifier. Apply the same check when combining serial numbering with other viewport-based rendering modes.
+
+### Limitations and Best Practices
+
+- The generated number is not stored in the task data and should not be used as a primary key or business identifier.
+- Use the underlying task fields for sorting and filtering; the serial number is a display index that changes when row visibility or order changes.
+- Keep the column narrow and place it near the start of the column list when it is intended as a row index.
+- Test filters, search, hierarchy expand/collapse, row drag and drop, virtualization, and any paging integration together if those operations are enabled.
 
 ---
 

@@ -231,7 +231,21 @@ Include weekends as working days:
 
 ## Duration Units
 
-Duration can be measured in Days (default), Hours, or Minutes. Set globally:
+Duration units define how task duration values are interpreted and calculated in the Gantt Chart. The Gantt control supports multiple duration units, and duration can be configured globally or per-task.
+
+### Supported Duration Units
+
+| Unit | Code | Use Case | Calculation Impact |
+|------|------|----------|-------------------|
+| **Day** | `0` (default) | General planning | Uses calendar days; affected by working hours, holidays, weekends |
+| **Hour** | `1` | Short or shift-based work | Uses hourly precision; affected by `HoursPerDay` setting |
+| **Minute** | `2` | Precision tasks, meetings | Uses minute precision |
+| **Week** | `3` | Sprint/iteration planning | Converts duration using `DaysPerWeek` before scheduling |
+| **Month** | `4` | Long phases, roadmap planning | Converts duration using `DaysPerMonth` before scheduling |
+
+### Set Global Duration Unit
+
+Set the global default duration unit for all tasks:
 
 ```cshtml
 @Html.EJS().Gantt("gantt")
@@ -240,21 +254,119 @@ Duration can be measured in Days (default), Hours, or Minutes. Set globally:
     .Render()
 ```
 
-Set per-task via a `DurationUnit` field in data:
+### Set Per-Task Duration Unit
+
+Map a `DurationUnit` field in your data model:
+
+**Model:**
 
 ```csharp
-new GanttData { TaskId = 2, TaskName = "Quick task", StartDate = ..., Duration = 4, DurationUnit = "hour" }
+public class GanttData
+{
+    public int TaskId { get; set; }
+    public string TaskName { get; set; }
+    public DateTime StartDate { get; set; }
+    public int Duration { get; set; }
+    public string DurationUnit { get; set; }  // "day", "hour", "minute", "week", "month"
+    public List<GanttData> SubTasks { get; set; }
+}
 ```
 
-Map in TaskFields:
+**View:**
 
 ```cshtml
-.TaskFields(tf => tf.Id("TaskId").Name("TaskName").StartDate("StartDate").Duration("Duration").DurationUnit("DurationUnit").Child("SubTasks"))
+@Html.EJS().Gantt("gantt")
+    .TaskFields(tf => tf
+        .Id("TaskId").Name("TaskName").StartDate("StartDate")
+        .Duration("Duration").DurationUnit("DurationUnit").Child("SubTasks")
+    )
+    .Render()
 ```
 
-Or embed unit in duration string: `"4 hours"`, `"30 minutes"`.
+### Embed Unit in Duration String
 
-> Default unit is `day`. Edit type for duration column is string when mixing units.
+You can optionally specify the unit directly in the duration value:
+
+```csharp
+new GanttData { TaskId = 1, TaskName = "Design", StartDate = new DateTime(2024, 4, 2), Duration = 4, DurationUnit = "day" },
+new GanttData { TaskId = 2, TaskName = "Development", StartDate = new DateTime(2024, 4, 6), Duration = 40, DurationUnit = "hour" },
+new GanttData { TaskId = 3, TaskName = "Planning Sprint", StartDate = new DateTime(2024, 4, 13), Duration = 2, DurationUnit = "week" }
+```
+
+Or as string values (when `AllowUnscheduledTasks` is enabled):
+
+```csharp
+new GanttData { TaskId = 4, Duration = "4 days" }
+new GanttData { TaskId = 5, Duration = "8 hours" }
+new GanttData { TaskId = 6, Duration = "2 weeks" }
+```
+
+> When mixing duration units in a single column, set the column's edit type to `string` to allow users to type the unit suffix.
+
+---
+
+### Week and Month Duration Calculation
+
+Week and month durations are converted to working-day equivalents before Gantt calculates the task schedule. A week uses `DaysPerWeek`; a month uses `DaysPerMonth`. These values represent planning conventions, not fixed seven-day weeks or calendar-month boundaries.
+
+| Property | Purpose |
+|---|---|
+| `DaysPerWeek` | Number of working days used to convert one week of duration |
+| `DaysPerMonth` | Number of working days used to convert one month of duration |
+
+Configure the conversion values globally. The values shown here are explicit project choices; set them to match the project's work-week and planning-month conventions:
+
+```cshtml
+@Html.EJS().Gantt("gantt")
+    .DataSource((IEnumerable<object>)ViewBag.GanttData)
+    .DaysPerWeek(5)
+    .DaysPerMonth(20)
+    .TaskFields(tf => tf
+        .Id("TaskId").Name("TaskName").StartDate("StartDate")
+        .Duration("Duration").DurationUnit("DurationUnit").Child("SubTasks")
+    )
+    .Render()
+```
+
+Map a per-task duration unit with `TaskFields.DurationUnit`. The task data can mix units:
+
+```csharp
+new GanttData { TaskId = 1, TaskName = "Sprint", StartDate = new DateTime(2024, 4, 1), Duration = 2, DurationUnit = "Week" },
+new GanttData { TaskId = 2, TaskName = "Release phase", StartDate = new DateTime(2024, 4, 15), Duration = 1, DurationUnit = "Month" }
+```
+
+Alternatively, configure one unit for all tasks with `DurationUnit`:
+
+```cshtml
+.DurationUnit(Syncfusion.EJ2.Gantt.DurationUnit.Week)
+```
+
+The unit can also be included in a duration string, such as `"2 weeks"` or `"1 month"`. For a column that accepts duration values with unit text, use a string edit type.
+
+When Gantt resolves a task's duration unit, an explicit unit in the duration value takes precedence over the mapped per-task `DurationUnit`; the global `DurationUnit` is used when neither task-level source specifies a unit.
+
+### Scheduling and Calendar Interaction
+
+The conversion values affect duration interpretation and the dates calculated from a task's start date. After conversion, normal scheduling rules determine the resulting schedule:
+
+- **Start and end dates:** Gantt converts the duration to working-day equivalents, then applies the active calendar to calculate the resulting end date. A date-only change is not implied by changing `DaysPerWeek` or `DaysPerMonth` unless the schedule is recalculated.
+- **Working time and `HoursPerDay`:** Working-time ranges govern which hours count toward task work. `HoursPerDay` controls the conversion between working hours and a displayed day-based duration; it is distinct from week/month conversion.
+- **Weekends and holidays:** Non-working days, holidays, and calendar exceptions affect when converted working days occur, so the elapsed calendar span can be longer than the converted duration.
+- **Task calendars:** A task assigned a calendar through `TaskFields.CalendarId` uses that calendar's scheduling rules instead of merging them with the project calendar. Unassigned tasks use the project calendar.
+- **Dependencies:** Dependency validation and successor scheduling operate on the calculated task dates and active calendar rules. Verify linked schedules after changing conversion values.
+- **Editing and taskbar editing:** Editing duration or moving/resizing a taskbar can recalculate dates using the configured unit and current calendar. Validate mixed-unit tasks after edits rather than assuming a fixed calendar span.
+- **Project scheduling:** In auto scheduling, task dates and parent rollups are based on the converted child schedules. Manual scheduling retains the mode's date-handling behavior; use the appropriate scheduling mode for the project.
+
+Week/month duration units describe planning work units: for example, with `DaysPerWeek(5)`, a two-week duration converts to ten working days before the calendar is applied. Holidays and excluded weekends can extend the elapsed timeline span. A month behaves similarly using `DaysPerMonth`, not by advancing to the same date in the next calendar month.
+
+### Edge Cases, Limitations, and Best Practices
+
+- Week and month durations are not equivalent to seven calendar days or a calendar-month boundary.
+- Different `DaysPerWeek` or `DaysPerMonth` values change the converted duration and can change dependent task dates after recalculation.
+- Keep these settings consistent with `WorkWeek` and the project's planning policy; they define conversion quantities and do not themselves mark weekdays as working or non-working.
+- Review task calendars, holidays, weekends, and predecessor validation together when checking resulting dates.
+- Document the configured conversion values, especially when project data is exchanged with other planning tools.
+- Test mixed-unit tasks through cell/dialog editing, taskbar editing, and dependency-driven rescheduling.
 
 ---
 

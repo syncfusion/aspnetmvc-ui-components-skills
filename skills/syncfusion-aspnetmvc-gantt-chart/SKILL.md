@@ -23,6 +23,7 @@ Use this skill when you need to:
 - Export to Excel, CSV, or PDF
 - Customize the timeline, taskbars, labels, tooltips, holidays, event markers and data markers/indicators
 - Configure task scheduling modes (Auto/Manual/Custom)
+- Configure project and task calendars, working time, holidays, and calendar exceptions
 - Enable undo/redo, state persistence, virtual scrolling, or critical path
 - Scroll the component, configure row height, or drag-and-drop rows
 - Set timezone or localise the UI for different cultures and RTL languages
@@ -51,6 +52,7 @@ Use this skill when you need to:
 - Defining columns with Field, HeaderText, Width, Format, TextAlign
 - Custom column headers and header templates
 - Column templates and value accessors
+- **Serial number column** — enable with `EnableSerialNumber(true)` and a `SerialNumber` field; numbers follow the visible row order
 - Checkbox column, frozen columns
 - Column reordering, resizing, spanning
 - Responsive columns, WBS column, column menu
@@ -67,10 +69,17 @@ Use this skill when you need to:
 - Server-side CRUD persistence
 - Edit validation and error handling
 
+### Taskbar Draw
+📄 **Read:** [references/taskbar-draw.md](references/taskbar-draw.md)
+- Configure `EditSettings.AllowTaskbarDraw(true)` to schedule unscheduled or partially scheduled rows on the timeline
+- Use `AllowUnscheduledTasks(true)` for unscheduled-row workflows
+- Review scheduling output, calendar/dependency interactions, and parent/milestone limitations
+
 ### Task Dependencies
 📄 **Read:** [references/task-dependency.md](references/task-dependency.md)
 - SS, SF, FS, FF relationship types
 - Mapping `Dependency` field in data source
+- **Allowed dependency types** — restrict dependency parsing, creation, and editing through `AllowedDependencyTypes`
 - Predecessor offset with duration units
 - Dependency editing via mouse drag
 - Validation, error handling, parent dependencies
@@ -108,9 +117,16 @@ Use this skill when you need to:
 ### Task Scheduling
 📄 **Read:** [references/task-scheduling.md](references/task-scheduling.md)
 - Auto, Manual, Custom scheduling modes (`TaskMode`)
-- Duration units (Day, Hour, Minute, Week, Month)
+- Duration units (Day, Hour, Minute, Week, Month), including `DaysPerWeek` and `DaysPerMonth` conversions
 - Unscheduled tasks
 - Task constraints (ALAP, ASAP, FNLT, SNLT, MSO, MFO)
+
+### Calendar Settings
+📄 **Read:** [references/calendar-settings.md](references/calendar-settings.md)
+- Configure the default project calendar and task-specific calendars
+- Map task calendars with `TaskFields.CalendarId` and `CalendarSettings.TaskCalendars`
+- Define working time, holidays, and date-specific exceptions
+- Understand calendar precedence and its effect on duration, weekends, and dependencies
 
 ### Baseline
 📄 **Read:** [references/baseline.md](references/baseline.md)
@@ -125,6 +141,7 @@ Use this skill when you need to:
 📄 **Read:** [references/selection.md](references/selection.md)
 - Row selection and cell selection
 - Single/multiple selection modes (`SelectionSettings`)
+- **Hierarchy checkbox mode** — control checkbox propagation with `HierarchyCheckboxMode` (`self`, `hierarchy`, `filteredHierarchy`)
 - Toggle selection and hover highlighting
 - Programmatic selection (`selectionModule.selectRow`, `selectRows`, `selectCell`)
 - Selection events (`RowSelecting`, `RowSelected`, `CellSelecting`, `CellSelected`)

@@ -1,6 +1,6 @@
 ---
 name: syncfusion-aspnetmvc-inline-ai-assist
-description: Implement Syncfusion ASP.NET MVC Inline AI Assist control. Use when building AI-powered inline text editing, prompt-response UIs, command popups, toolbar customization, response actions, and localization in ASP.NET MVC Razor views. Triggers when user needs to integrate InlineAIAssist, configure CommandSettings, ResponseSettings, InlineToolbarSettings, EditorTemplate, ResponseTemplate, or call methods like addResponse, executePrompt, showPopup, hidePopup in ASP.NET MVC applications.
+description: Implement Syncfusion ASP.NET MVC Inline AI Assist control. Use when building AI-powered inline text editing, prompt-response UIs, command popups, toolbar customization, response actions, voice input via speech-to-text, and localization in ASP.NET MVC Razor views. Triggers when user needs to integrate InlineAIAssist, configure CommandSettings, ResponseSettings, InlineToolbarSettings, EditorTemplate, ResponseTemplate, SpeechToTextSettings, or call methods like addResponse, executePrompt, showPopup, hidePopup in ASP.NET MVC applications.
 metadata:
   author: "Syncfusion Inc"
   version: "34.1.29"
@@ -127,6 +127,18 @@ When user needs to:
 - Localize UI strings (send button, stop responding, thinking indicator)
 - Enable RTL layout with `EnableRtl`
 
+### Speech-to-Text
+📄 **Read:** [references/speech-to-text.md](references/speech-to-text.md)
+
+When user needs to:
+- Enable voice input via `SpeechToTextSettings.Enable` (microphone button in prompt)
+- Configure recognition language with `Lang` (e.g., `en-US`, `es-ES`, `fr-FR`)
+- Customize the microphone button via `ButtonSettings` (`Content`, `StopContent`, `IconCss`, `StopIconCss`)
+- Show partial transcriptions during speech with `AllowInterimResults`
+- Customize hover tooltips via `TooltipSettings` (`content`, `stopContent`)
+- Handle recognition lifecycle with `OnStart`, `OnStop`, `TranscriptChanged`, and `OnError` events
+- Surface errors and live transcript in a status panel
+
 ---
 
 ## Key Properties at a Glance
@@ -150,6 +162,7 @@ When user needs to:
 | `InlineToolbarSettings` | object | Inline toolbar items and position |
 | `EditorTemplate` | string | Custom footer/editor area template |
 | `ResponseTemplate` | string | Custom response item template |
+| `SpeechToTextSettings` | object | Voice input configuration: `Enable`, `Lang`, `AllowInterimResults`, `ButtonSettings` (`Content`, `StopContent`, `IconCss`, `StopIconCss`), `TooltipSettings` (`content`, `stopContent`) |
 
 ---
 

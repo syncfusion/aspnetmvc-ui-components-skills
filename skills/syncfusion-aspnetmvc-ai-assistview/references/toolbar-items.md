@@ -4,6 +4,7 @@
 - [Footer Toolbar](#footer-toolbar)
   - [Default Footer Items](#default-footer-items)
   - [Toolbar Positioning](#toolbar-positioning)
+  - [Setting Alignment](#setting-alignment)
   - [Adding Custom Footer Items](#adding-custom-footer-items)
   - [Footer ItemClick Event](#footer-itemclick-event)
 - [Header Toolbar Items](#header-toolbar-items)
@@ -156,6 +157,62 @@ Use `ToolbarSettings.Items` to add buttons to the header toolbar (top area of th
     })
     .Render()
 ```
+
+---
+
+### Setting Alignment
+
+You can change the alignment of a toolbar item by using the `Align` property. It supports three alignment values: `Left`, `Center`, and `Right`. By default, the value is `Left`.
+
+In the following example, the toolbar item is aligned to the `Right`.
+
+```razor
+@using Syncfusion.EJ2.InteractiveChat
+
+<div class="aiassist-container" style="height: 350px; width: 650px;">
+    @Html.EJS().AIAssistView("aiAssistView")
+        .PromptRequest("onPromptRequest")
+        .Created("onCreated")
+        .ToolbarSettings(new AIAssistViewToolbarSettings()
+        {
+            Items = ViewBag.Items
+        })
+        .Render()
+</div>
+
+<script>
+    var assistObj;
+    function onCreated() {
+        assistObj = this;
+    }
+    function onPromptRequest(args) {
+        setTimeout(function () {
+            var defaultResponse = 'For real-time prompt processing, connect the AI AssistView control to your preferred AI service, such as OpenAI or Azure Cognitive Services. Ensure you obtain the necessary API credentials to authenticate and enable seamless integration.';
+            assistObj.addPromptResponse(defaultResponse);
+        }, 2000);
+    }
+</script>
+```
+
+```csharp
+public List<ToolbarItemModel> Items { get; set; } = new List<ToolbarItemModel>();
+
+public ActionResult Align()
+{
+    Items.Add(new ToolbarItemModel { align = "Right", iconCss = "e-icons e-refresh" });
+    ViewBag.Items = Items;
+    return View();
+}
+
+public class ToolbarItemModel
+{
+    public string align { get; set; }
+
+    public string iconCss { get; set; }
+}
+```
+
+> **Note:** The same `Align` property applies to all toolbar item collections (header, footer, prompt, and response). Setting `align = "Right"` renders the item on the right edge of the toolbar.
 
 ---
 

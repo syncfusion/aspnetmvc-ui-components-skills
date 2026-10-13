@@ -23,6 +23,8 @@ Use this skill when users want to:
 - Customize event rendering, templates, or styling
 - Implement timezone-aware scheduling across regions
 - Export calendar data to Excel, PDF, or ICS formats
+- Configure buffer times (prep/recovery) around appointments using Event Buffer
+- Visually highlight the current time with a customizable indicator (CustomCurrentTimeIndicator)
 
 ## Component Overview
 
@@ -36,6 +38,8 @@ The Scheduler component provides:
 - **Advanced Features**: Timezone support, localization, virtual scrolling, state persistence
 - **Interactions**: Context menu, quick info popup, keyboard navigation, touch support
 - **Export**: Excel, PDF, ICS (iCalendar) formats
+- **Event Buffer**: Configurable pre/post buffer times around appointments with custom templates and overlap detection
+- **Custom Current Time Indicator**: Fully configurable current time indicator with label, previous date support, and layering options
 
 ---
 
@@ -89,6 +93,22 @@ The Scheduler component provides:
 - Appointments occupying full cell height (enableMaxHeight)
 - Custom appointment colors and backgrounds
 - Quick Info popup customization
+
+📄 **Read:** [references/event-buffer.md](references/event-buffer.md)
+- Enabling the buffer feature with `EnableBuffer`
+- `BufferBefore` and `BufferAfter` event fields (in minutes)
+- Field mappings through `EventSettings.Fields`
+- Custom `BufferTemplate` rendering
+- Overlap behavior with `AllowOverlap(false)`
+- Supported views (Day, Week, WorkWeek, Timeline variants)
+- Use cases such as surgery prep/recovery and service appointments
+
+📄 **Read:** [references/custom-current-time-indicator.md](references/custom-current-time-indicator.md)
+- Enabling and customizing the current time indicator
+- `ShowTimeIndicator` property usage
+- `CurrentTimeIndicatorSettings` options: `ShowTime`, `ShowPreviousDates`, `OnTop`
+- Supported views (Day, Week, WorkWeek, TimelineDay, TimelineWeek, TimelineWorkWeek)
+- Limitations and best practices
 
 ### Views and Navigation
 📄 **Read:** [references/views.md](references/views.md)

@@ -9,6 +9,7 @@
   - [attachmentUploadSuccess](#attachmentuploadsuccess)
   - [attachmentUploadFailure](#attachmentuploadfailure)
   - [attachmentRemoved](#attachmentremoved)
+  - [attachmentRemoving](#attachmentremoving)
   - [attachmentClick](#attachmentclick)
 
 ---
@@ -227,6 +228,73 @@ function attachmentRemoved(args) {
     // args.file — removed file details
 }
 ```
+
+---
+
+### attachmentRemoving
+
+Fires when an attached file is being removed (before the removal completes). Use this to run a confirmation, validation, or cleanup step before the file is detached from the AI AssistView. It is the cancellable counterpart to `attachmentRemoved` — you can intercept and act on the removal in progress.
+
+```razor
+@using Syncfusion.EJ2.InteractiveChat
+
+<div class="aiassist-container" style="height: 350px; width: 650px;">
+    @Html.EJS().AIAssistView("aiAssistView")
+        .EnableAttachments(true)
+        .AttachmentRemoving("attachmentRemoving")
+        .PromptRequest("onPromptRequest")
+        .Created("onCreated")
+        .AttachmentSettings(new AIAssistViewAttachmentSettings()
+        {
+            SaveUrl = @Url.Content("https://services.syncfusion.com/aspnet/production/api/FileUploader/Save"),
+            RemoveUrl = @Url.Content("https://services.syncfusion.com/aspnet/production/api/FileUploader/Remove")
+        })
+        .Render()
+</div>
+
+<script>
+    var assistObj;
+
+    function onCreated() {
+        assistObj = this;
+    }
+
+    function attachmentRemoving() {
+        // your required action here..
+    }
+
+    function onPromptRequest() {
+        setTimeout(function () {
+            var defaultResponse = 'For real-time prompt processing, connect the AI AssistView control to your preferred AI service, such as OpenAI or Azure Cognitive Services. Ensure you obtain the necessary API credentials to authenticate and enable seamless integration.';
+            assistObj.addPromptResponse(defaultResponse);
+        }, 2000);
+    }
+</script>
+```
+
+**Event Arguments**
+
+The following table describes the event arguments available on the `AttachmentRemoving` event.
+
+| Argument | Type | Description |
+|---|---|---|
+| `cancel` | `boolean` | Defines whether the current action can be prevented. |
+| `currentRequest` | `XMLHttpRequest` | Returns the `XMLHttpRequest` instance that is associated with the remove action. |
+| `customFormData` | `{ [key: string]: Object }[]` | Defines the additional data with key and value pair format that will be submitted to the remove action. |
+| `event` | `MouseEvent \| TouchEvent \| KeyboardEventArgs` | Returns the original event arguments. |
+| `filesData` | `FileInfo[]` | Returns the list of files' details that will be removed. |
+| `postRawFile` | `boolean` | Defines whether the selected raw file is sent to the server remove action. Set to `true` to send the raw file; set to `false` to send the file name only. |
+
+**Controller:**
+
+```csharp
+public ActionResult AttachmentRemoving()
+{
+    return View();
+}
+```
+
+> **Tip:** Use `attachmentRemoving` for pre-removal hooks (validation, confirmation, async cleanup). Use `attachmentRemoved` for post-removal notification (UI updates, logging). The same `SaveUrl` / `RemoveUrl` configuration applies to both.
 
 ---
 

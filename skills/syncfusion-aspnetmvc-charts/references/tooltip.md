@@ -414,6 +414,52 @@ Handle tooltip rendering for custom behavior.
     .Render()
 ```
 
+### Raw Datasource Record in `TooltipRender`
+
+The complete datasource record is available only in the `TooltipRender` event through `args.data.rawData`. It is not a tooltip format token.
+
+```cshtml
+<script>
+    function tooltipRender(args) {
+        if (!args.data || !args.data.rawData) {
+            return;
+        }
+        var rawData = args.data.rawData;
+        args.headerText = '<b>' + rawData.x + '</b>';
+        args.text = [
+            'Open: ' + rawData.open,
+            'High: ' + rawData.high,
+            'Low: ' + rawData.low,
+            'Close: ' + rawData.close
+        ];
+    }
+</script>
+
+@Html.EJS().Chart("rawDataTooltipChart")
+    .PrimaryXAxis(x => x.ValueType(Syncfusion.EJ2.Charts.ValueType.Category))
+    .Tooltip(t => t.Enable(true))
+    .TooltipRender("tooltipRender")
+    .Series(series => series
+        .Type(Syncfusion.EJ2.Charts.ChartSeriesType.HiloOpenClose)
+        .DataSource(ViewBag.HiloData)
+        .XName("X").Open("Open").High("High").Low("Low").Close("Close")
+        .Name("Price").Add())
+    .Render()
+```
+
+```csharp
+ViewBag.HiloData = new[]
+{
+    new { X = "Jan", Open = 120, High = 160, Low = 100, Close = 140 },
+    new { X = "Feb", Open = 150, High = 190, Low = 130, Close = 170 },
+    new { X = "Mar", Open = 130, High = 170, Low = 110, Close = 150 },
+    new { X = "Apr", Open = 160, High = 180, Low = 120, Close = 140 },
+    new { X = "May", Open = 150, High = 170, Low = 110, Close = 130 }
+};
+```
+
+Use serialized field names such as `args.data.rawData.x` and `args.data.rawData.high`. Do not generate `${point.data.<field>}` for this feature.
+
 ## Common Patterns
 
 ### Financial Chart Tooltip

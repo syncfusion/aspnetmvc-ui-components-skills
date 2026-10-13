@@ -22,6 +22,7 @@
     - [Zoom & Pan Properties](#zoom--pan-properties)
     - [Selection & Interaction Properties](#selection--interaction-properties)
     - [Advanced Features Properties](#advanced-features-properties)
+    - [WebMCP Properties](#webmcp-properties)
     - [Export & Print Properties](#export--print-properties)
     - [Localization & Accessibility](#localization--accessibility)
     - [State Management](#state-management)
@@ -138,6 +139,47 @@ Creates a new instance of the Chart component.
 | SelectedDataIndexes | List<ChartSelectedDataIndex> | null | Preselected point indexes | [Link](https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html#Syncfusion_EJ2_Charts_Chart_SelectedDataIndexes) |
 | Crosshair | ChartCrosshairSettings | null | Crosshair settings | [Link](https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html#Syncfusion_EJ2_Charts_Chart_Crosshair) |
 | DragSettings | ChartDragSettings | null | Drag interaction settings | [Link](https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html#Syncfusion_EJ2_Charts_Chart_DragSettings) |
+
+#### WebMCP Properties
+
+| Property | Type | Default | Description | API Link |
+|----------|------|---------|-------------|----------|
+| EnableWebMcp | bool | false | Enables WebMCP integration and automatic registration of Chart tools after rendering | [Chart.EnableWebMcp](https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html#Syncfusion_EJ2_Charts_Chart_EnableWebMcp) |
+| WebMcpSettings | ChartWebMcpSettings | null | Configures the WebMCP registration name, selected or custom tools, and permitted model contexts | [Chart.WebMcpSettings](https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html#Syncfusion_EJ2_Charts_Chart_WebMcpSettings) |
+
+##### `ChartWebMcpSettings`
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| Name | string | null | Prefix for registered tool names. When null or empty, the Chart element ID is used. |
+| Tools | object or tool-name collection | null | Built-in allowlist or custom tool definitions. Omit to register every built-in tool. An empty collection clears prior registrations. |
+| ExposedTo | string[] | null | Model contexts or origins permitted to access the registered tools. |
+
+##### Fluent-builder methods
+
+| Method | Description |
+|--------|-------------|
+| `EnableWebMcp(bool enableWebMcp = true)` | Enables or disables WebMCP integration and returns the current `ChartBuilder`. |
+| `WebMcpSettings(...)` | Configures the registration name, tools, and exposure settings and returns the current `ChartBuilder`. |
+
+```cshtml
+@Html.EJS().Chart("salesChart")
+    .EnableWebMcp(true)
+    .WebMcpSettings(settings => settings
+        .Name("salesChart")
+        .Tools(new[] { "inspectChart", "getSeriesData", "getChartAxes" })
+        .ExposedTo(new[] { "assistant" }))
+    .Render()
+```
+
+When all built-in tools are required, omit `Tools`:
+
+```cshtml
+@Html.EJS().Chart("salesChart")
+    .EnableWebMcp(true)
+    .WebMcpSettings(settings => settings.Name("salesChart"))
+    .Render()
+```
 
 #### Advanced Features Properties
 
@@ -562,6 +604,7 @@ using Syncfusion.EJ2.Charts;
 
 - **Official Documentation:** https://ej2.syncfusion.com/aspnetmvc/documentation/chart/
 - **Chart API Reference:** https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html
+- **WebMCP APIs:** `Chart.EnableWebMcp`, `Chart.WebMcpSettings`, `Chart.BeforeWebMcpToolExecute`, and their `ChartBuilder` methods
 - **ChartSeries API Reference:** https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.ChartSeries.html
 - **ChartAxis API Reference:** https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.ChartAxis.html
 - **ASP.NET MVC Chart Demos:** https://ej2.syncfusion.com/aspnetmvc/chart/overview

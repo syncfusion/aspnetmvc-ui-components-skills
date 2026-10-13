@@ -1,6 +1,6 @@
 ---
 name: syncfusion-aspnetmvc-ai-assistview
-description: Implement the Syncfusion ASP.NET MVC AI AssistView component — a conversational AI chat interface with prompt/response rendering, prompt suggestions, custom views, toolbar customization, file attachments, speech-to-text, AI backend integrations (Azure OpenAI, Gemini, Ollama, LiteLLM), generative UI with interactive tools, Chain of Thoughts reasoning visualization and text-to-speech audio playback. Use this skill when building AI chat UIs, integrating LLM backends, configuring assistant toolbars, customizing templates, rendering dynamic UI components, or handling voice input/output in ASP.NET MVC applications.
+description: Implement the Syncfusion ASP.NET MVC AI AssistView component — a conversational AI chat interface with prompt/response rendering, prompt suggestions, mentions in the prompt editor, custom views, toolbar customization, file attachments, speech-to-text, telemetry tracking, AI backend integrations (Azure OpenAI, Gemini, Ollama, LiteLLM), generative UI with interactive tools, Chain of Thoughts reasoning visualization and text-to-speech audio playback. Use this skill when building AI chat UIs, integrating LLM backends, configuring assistant toolbars, customizing templates, rendering dynamic UI components, or handling voice input/output in ASP.NET MVC applications.
 metadata:
   author: "Syncfusion Inc"
   version: "34.1.29"
@@ -44,6 +44,7 @@ A full-featured conversational AI interface component for ASP.NET MVC. Renders p
 - Banner template (`BannerTemplate`) — welcome notes, branding
 - Prompt item template (`PromptItemTemplate`) — custom prompt bubbles
 - Response item template (`ResponseItemTemplate`) — custom response bubbles
+- Response animation template (`ResponseAnimationTemplate`) — custom loading indicator while response is being generated
 - Prompt suggestion item template (`PromptSuggestionItemTemplate`)
 - Footer template (`FooterTemplate`) — fully custom input area
 
@@ -51,6 +52,7 @@ A full-featured conversational AI interface component for ASP.NET MVC. Renders p
 📄 **Read:** [references/toolbar-items.md](references/toolbar-items.md)
 - Footer toolbar (send, attachment, positioning, custom items, ItemClick)
 - Header toolbar items (iconCss, type, text, visible, disabled, tooltip, cssClass, align, tabIndex, template, ItemClicked)
+- **Setting alignment** — change toolbar item alignment via `Align` property (`Left`, `Center`, `Right`)
 - Built-in prompt toolbar (edit, copy) and response toolbar (copy, like, dislike)
 - Custom prompt toolbar items (`PromptToolbarSettings`)
 - Custom response toolbar items (`ResponseToolbarSettings`)
@@ -95,7 +97,7 @@ A full-featured conversational AI interface component for ASP.NET MVC. Renders p
 - `Created` — after control renders
 - `PromptRequest` — when user submits a prompt
 - `PromptChanged` — when prompt text changes
-- Attachment events: `BeforeAttachmentUpload`, `AttachmentUploadSuccess`, `AttachmentUploadFailure`, `AttachmentRemoved`, `AttachmentClick`
+- Attachment events: `BeforeAttachmentUpload`, `AttachmentUploadSuccess`, `AttachmentUploadFailure`, `AttachmentRemoved`, `AttachmentRemoving`, `AttachmentClick`
 
 ### Methods
 📄 **Read:** [references/methods.md](references/methods.md)
@@ -112,6 +114,28 @@ A full-featured conversational AI interface component for ASP.NET MVC. Renders p
 - **Speech-to-Text** (`SpeechToTextSettings`: enable, lang, buttonSettings, tooltipSettings, interimResults, events)
 - **Text-to-Speech (TTS)** (`TextToSpeechSettings`: language, speechPitch, speechRate, volume, voice; enable via `e-assist-audio` toolbar icon)
 - Streaming response pattern (character-by-character with `marked.js`)
+
+### Telemetry
+📄 **Read:** [references/telemetry.md](references/telemetry.md)
+- Enabling telemetry via `TelemetrySettings(new AIAssistViewTelemetrySettings { Enable = true })`
+- Built-in telemetry button in the response toolbar showing the response duration
+- Hover tooltip displaying the telemetry report for each response
+- Configuring captured metrics with the `Metrics` property (`status`, `duration`, `toolCalls`, `streamingChunks`, `model`, `inputTokens`, `outputTokens`, `totalTokens`, `reasoningTokens`, `cachedInputTokens`)
+- Customizing reports with the `BeforeReport` callback (modify, add custom attributes, or suppress)
+- Passing `TelemetryData` to `addPromptResponse` to merge model and token usage details
+- Adding domain-specific custom attributes via `customAttributes` on `TelemetryData`
+- Turn tracking, button state, tooltip display, duration formatting, total-token computation, and regenerate flow behavior
+
+### Mentions
+📄 **Read:** [references/mentions.md](references/mentions.md)
+- Enabling mentions in the prompt editor using the `Mentions` property (array of mention settings)
+- Mention trigger character with `MentionChar` (e.g., `@`, `/`) and `ShowMentionChar` toggle for selected mentions
+- Data source configuration with `DataSource` (local collection or `DataManager` for remote data)
+- Field mappings via `Fields` for display text and unique value
+- Filtering suggestions with `Query`, `FilterType` (`Contains`, `StartsWith`, `EndsWith`), and `Highlight` properties
+- Popup dimensions using `PopupWidth` and `PopupHeight`
+- Customization with `DisplayTemplate`, `ItemTemplate`, and `NoRecordsTemplate`
+- Handling selection via the `MentionSelect` event with `args.itemData`
 
 ---
 
@@ -223,6 +247,8 @@ function toolbarItemClicked(args) {
 | `EnableAttachments` | bool | Enable file attachment button (default: false) |
 | `ResponseToolbarSettings.Items` | collection | Response toolbar buttons; can include `e-assist-regenerate` (regenerate) and `e-assist-audio` (text-to-speech) |
 | `TextToSpeechSettings` | object | Configure TTS behavior: `Language`, `SpeechPitch`, `SpeechRate`, `Volume`, `Voice` |
+| `TelemetrySettings` | object | Configure telemetry tracking: `Enable`, `Metrics`, `BeforeReport`; hover tooltip in response toolbar shows the captured report |
+| `Mentions` | collection | Array of mention settings with `MentionChar`, `DataSource`, `Fields`, `Query`, `FilterType`, `Highlight`, `ShowMentionChar`, `PopupWidth`, `PopupHeight`, `DisplayTemplate`, `ItemTemplate`, `NoRecordsTemplate` |
 | `BlockTemplate` | string | Custom template for thinking/tool blocks (generative UI and Chain of Thoughts) |
 | `ItemTemplate` | string | Custom template for thinking block stages in timeline |
 
@@ -237,6 +263,7 @@ function toolbarItemClicked(args) {
 | `AttachmentUploadSuccess` | File uploaded successfully |
 | `AttachmentUploadFailure` | File upload failed |
 | `AttachmentRemoved` | Attachment removed |
+| `AttachmentRemoving` | Attachment is being removed (pre-removal hook) |
 
 ## Key Methods
 

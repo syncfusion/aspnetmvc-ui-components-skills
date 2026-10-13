@@ -200,6 +200,20 @@ Use this skill when you need to:
 - Series colors and point customization
 - Animation configuration
 
+### WebMCP and AI Agent Integration
+
+📄 **Read:** [references/webmcp.md](references/webmcp.md)
+
+When you need to:
+- Enable WebMCP with `.EnableWebMcp(true)`
+- Configure `.WebMcpSettings(...)`
+- Set the registration `Name`, selected `Tools`, custom tools, or `ExposedTo`
+- Register all built-in tools by omitting `Tools`
+- Handle execution with `.BeforeWebMcpToolExecute(...)`
+- Use automatic registration without `registerWebMcpTools()`
+- Generate complete MVC view and controller samples
+- Avoid manual registration controls and fabricated model-context behavior
+
 ### Advanced Features
 
 📄 **Read:** [references/advanced-features.md](references/advanced-features.md)
@@ -229,6 +243,8 @@ Use this skill when you need to:
 - Culture-specific rendering
 
 ### Chart API Reference
+
+WebMCP additions in the API reference include `EnableWebMcp`, `WebMcpSettings`, `BeforeWebMcpToolExecute`, and their fluent `ChartBuilder` methods.
 
 📄 **Read:** [references/chart-api-reference.md](references/chart-api-reference.md)
 - Complete Chart class API with 100+ properties
@@ -502,4 +518,5 @@ Handle chart events for interactive behavior:
 - **Official Documentation**: https://ej2.syncfusion.com/aspnetmvc/documentation/chart/
 - **Component Demos**: https://ej2.syncfusion.com/aspnetmvc/Chart/
 - **API Reference**: https://help.syncfusion.com/cr/aspnetmvc-js2/Syncfusion.EJ2.Charts.Chart.html
+- **WebMCP Reference**: [references/webmcp.md](references/webmcp.md)
 - **GitHub Examples**: https://github.com/SyncfusionExamples/ASP-NET-MVC-Getting-Started-Examples/tree/main/Chart/

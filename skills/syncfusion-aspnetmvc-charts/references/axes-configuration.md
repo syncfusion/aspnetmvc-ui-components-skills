@@ -287,6 +287,95 @@ Automatic handling of overlapping labels.
     .MaximumLabelWidth(100))
 ```
 
+
+
+##### Configuration Placement and Supported Actions
+
+Set `LabelIntersectAction` directly on the primary or additional axis. Supported actions are `None`, `Hide`, `Trim`, `Wrap`, `MultipleRows`, `Rotate45`, `Rotate90`, `Rotate45WithTrim`, and `Rotate90WithTrim`.
+
+```cshtml
+.PrimaryXAxis(axis => axis
+    .ValueType(Syncfusion.EJ2.Charts.ValueType.Category)
+    .LabelIntersectAction(Syncfusion.EJ2.Charts.LabelIntersectAction.Rotate45WithTrim)
+    .MaximumLabelWidth(90))
+```
+
+Use `MaximumLabelWidth` with trim or wrap actions. Use `LabelRotation` only for a fixed angle independent of collision detection. Do not combine contradictory fixed-rotation and intersection-action settings.
+
+##### Complete MVC Sample
+
+```cshtml
+@using Syncfusion.EJ2.Charts
+
+@Html.EJS().Chart("axisLabelChart")
+    .Title("Department Revenue")
+    .PrimaryXAxis(axis => axis
+        .ValueType(ValueType.Category)
+        .LabelIntersectAction(LabelIntersectAction.Rotate45WithTrim)
+        .MaximumLabelWidth(90))
+    .PrimaryYAxis(axis => axis.Minimum(0).Maximum(80).Interval(20))
+    .Series(series => series.DataSource(ViewBag.DepartmentData)
+        .Type(ChartSeriesType.Column).XName("Department").YName("Revenue").Add())
+    .Render()
+```
+
+```csharp
+using System.Web.Mvc;
+
+public class ChartController : Controller
+{
+    public ActionResult AxisLabels()
+    {
+        ViewBag.DepartmentData = new[]
+        {
+            new { Department = "Consumer Electronics and Accessories", Revenue = 72 },
+            new { Department = "Home Furniture and Interior Products", Revenue = 58 },
+            new { Department = "Sports Equipment and Outdoor Recreation", Revenue = 64 }
+        };
+        return View();
+    }
+}
+```
+
+
+#### Rotation with Trimming
+
+`LabelIntersectAction` also supports:
+
+- `Rotate45WithTrim`: Rotates intersecting labels by 45 degrees and trims text that exceeds the available bounds.
+- `Rotate90WithTrim`: Rotates intersecting labels by 90 degrees and trims text that exceeds the available bounds.
+
+```cshtml
+@Html.EJS().Chart("rotate45WithTrimChart")
+    .Title("Department Revenue")
+    .PrimaryXAxis(x => x
+        .ValueType(Syncfusion.EJ2.Charts.ValueType.Category)
+        .LabelIntersectAction(Syncfusion.EJ2.Charts.LabelIntersectAction.Rotate45WithTrim)
+        .MaximumLabelWidth(90))
+    .PrimaryYAxis(y => y.Minimum(0).Maximum(80).Interval(20))
+    .Series(series => series
+        .Type(Syncfusion.EJ2.Charts.ChartSeriesType.Column)
+        .DataSource(ViewBag.DepartmentData)
+        .XName("Department").YName("Revenue").Name("Revenue").Add())
+    .Render()
+```
+
+```csharp
+ViewBag.DepartmentData = new[]
+{
+    new { Department = "Consumer Electronics and Accessories", Revenue = 72 },
+    new { Department = "Home Furniture and Interior Products", Revenue = 58 },
+    new { Department = "Sports Equipment and Outdoor Recreation", Revenue = 64 },
+    new { Department = "Personal Care and Beauty Products", Revenue = 49 }
+};
+```
+
+For the 90-degree action, use:
+
+```csharp
+.LabelIntersectAction(Syncfusion.EJ2.Charts.LabelIntersectAction.Rotate90WithTrim)
+```
+
 ### Edge Label Placement
 
 Control how edge labels are positioned.
@@ -300,6 +389,60 @@ Control how edge labels are positioned.
 - `None` - Default positioning
 - `Shift` - Shift edge labels inside chart area
 - `Hide` - Hide edge labels if they don't fit
+
+
+
+## Axis Scrollbar
+
+Use `ZoomSettings(...EnableScrollbar(true))` for the standard zoom scrollbar. Use axis `ScrollbarSettings(...)` for appearance, placement, lazy-load range, and zoom behavior.
+
+```cshtml
+@using Syncfusion.EJ2.Charts
+
+@Html.EJS().Chart("scrollbarChart")
+    .PrimaryXAxis(axis => axis.ValueType(ValueType.Category).ZoomFactor(0.5).ZoomPosition(0)
+        .ScrollbarSettings(settings => settings.Enable(true).Height(16).EnableZoom(true)
+            .Position(ScrollbarPosition.PlaceNextToAxisLine).ScrollbarRadius(4).TrackRadius(4)
+            .ScrollbarColor("#6B7280").TrackColor("#E5E7EB").GripColor("#FFFFFF")))
+    .ZoomSettings(settings => settings.EnableScrollbar(true).EnableSelectionZooming(true)
+        .EnableMouseWheelZooming(true).EnablePan(true).Mode(ZoomMode.X))
+    .ScrollStart("scrollStart").ScrollChanged("scrollChanged").ScrollEnd("scrollEnd")
+    .Series(series => series.DataSource(ViewBag.MonthlySales).Type(ChartSeriesType.Line)
+        .XName("Month").YName("Sales").Add())
+    .Render()
+
+<script>
+    function scrollStart(args) { console.log('Scroll started', args); }
+    function scrollChanged(args) { console.log('Scroll changed', args); }
+    function scrollEnd(args) { console.log('Scroll ended', args); }
+</script>
+```
+
+- Use `Height` of at least `12` for the grip-circle visual.
+- Set `EnableZoom(false)` for pan-only behavior.
+- Use `Top` or `Bottom` for horizontal axes and `Left` or `Right` for vertical axes.
+- Use `Range` for the full DateTime lazy-load range.
+- Use `PointsLength` for numeric or logarithmic lazy loading.
+- `ScrollStart`, `ScrollChanged`, and `ScrollEnd` report interaction start, continuous change, and final range resolution.
+
+```csharp
+using System.Web.Mvc;
+
+public class ChartController : Controller
+{
+    public ActionResult Scrollbar()
+    {
+        ViewBag.MonthlySales = new[]
+        {
+            new { Month = "Jan", Sales = 35 }, new { Month = "Feb", Sales = 28 },
+            new { Month = "Mar", Sales = 34 }, new { Month = "Apr", Sales = 32 },
+            new { Month = "May", Sales = 40 }, new { Month = "Jun", Sales = 32 }
+        };
+        return View();
+    }
+}
+```
+
 
 ## Multilevel Labels
 
